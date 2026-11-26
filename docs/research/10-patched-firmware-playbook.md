@@ -36,7 +36,7 @@
 | V0000.06.10S.N1222 (VS1165UD1_0400 (Toshiba/Vestel; retail model unconfirmed), EU_A (DevKit platform MT9602_EU_A; country unconfirmed)) | MTK9602 (MT9602_EU_A; armv7l) | closed | untested | untested | untested | untested | [@PureBreadBagel](https://github.com/PureBreadBagel) |
 | V0000.09.60A.Q0602 (65A85QEVS, EU_A (Czech Republic)) | MTK9618 (aarch64 kernel, 32-bit ARM userland) | open | closed | gated | untested | achieved | [@LastThylacine](https://github.com/LastThylacine) |
 | V0000.09.60A.Q0707 (55U67LEVS) (55U67LEVS (55U6LE series), EU_A) | MTK9603 | open | untested | untested | untested | achieved | [unit owner](https://github.com/carteakey/alvidaa) |
-| V0000.09.09O.P0930 (65E86GEVS (serial type 65E8GE), EM_B) | MTK9618 (mt5879; aarch64 kernel, armhf userland) | open | open | n-a | untested | achieved | [@noctonca](https://github.com/noctonca) |
+| V0000.09.09O.P0930 (75U7KQ; 65E86GEVS (75U63KAVS / 65E8GE), EU_A (CZE); EM_B (65E86GEVS)) | MTK9618 (mt5879; aarch64 kernel, armhf userland) | open | open | n-a | untested | achieved | [@noctonca](https://github.com/noctonca), [@aleskxyz](https://github.com/aleskxyz) |
 | V0000.09.60A.Q0707 (65A70LAVT) (65A70LAVT (serial type 65A7NA), AU (EM_C, countryID AUS)) | MTK9603 (MT5896) | open | gated | working | untested | achieved | [u/sl3yr84](https://reddit.com/user/sl3yr84) |
 | V0000.09.60A.Q0602 (55U65QEVS) (55U65QEVS (retail 55U7QTUK; serial type 55U6QE), EU_A (Great Britain)) | MTK9618 (aarch64 kernel 5.4.302, 32-bit ARM userland; mt5879) | open | closed | gated | untested | achieved | [@gwerneckp](https://github.com/gwerneckp) |
 <!-- INVENTORY:END -->

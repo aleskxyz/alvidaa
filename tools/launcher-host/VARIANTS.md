@@ -48,6 +48,7 @@ node tools/launcher-host/native-install.cjs bootstrap --model 50a51huv --host <t
 # another variant -> switch. The stock backup is never replaced.
 node tools/launcher-host/native-install.cjs install free-my-tv --model 50a51huv --host <tv-ip>
 node tools/launcher-host/native-install.cjs install alvidaa     --model 50a51huv --host <tv-ip>
+node tools/launcher-host/native-install.cjs install free-my-tv-09o --model 75u7kq --host <tv-ip> --port 8008 --no-watcher
 
 # back to stock, whichever variant is installed. The watcher is handed back
 # too, so the canvas launcher works again without a manual cp.

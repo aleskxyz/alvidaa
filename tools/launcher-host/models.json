@@ -41,6 +41,20 @@
       "mode": "0640",
       "supervisor": "no APM respawn; the switch script launches explicitly"
     },
+    "75u7kq": {
+      "name": "75U7KQ / V0000.09.09O.P0930",
+      "app": "/APPS/pkgs/tv.vidaa.app.operationui/CHB/apps/launcher/js/app.js",
+      "state": "/var/local/alvidaa",
+      "switch": "switch-home-75u7kq.sh",
+      "local_stock": "firmware/75u7kq/operationui/apps/launcher/js/app.js",
+      "stock_md5": "8131f9a4ac93a001c27bbdf6c6e7b395",
+      "stock_sha256": "f7c90623fc8e7d3701509736c2869c9c59d6cd8942f17095425db40eb698bce9",
+      "engine": "SystemUI",
+      "owner": "305:909",
+      "mode": "0640",
+      "channel": "CHB (operation-ui; MTK9618 U09.09)",
+      "supervisor": "no APM respawn; the switch script launches explicitly"
+    },
     "65a85qevs": {
       "name": "65A85QEVS / V0000.09.60A.Q0602",
       "app": "/APPS/pkgs/tv.vidaa.app.operationui/CHB/apps/launcher/js/app.js",

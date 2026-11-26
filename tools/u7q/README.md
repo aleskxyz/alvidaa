@@ -19,8 +19,11 @@ This is specific to that model and firmware. Read the model guide first:
 | [`scripts/trigger.sh`](scripts/trigger.sh) | Serve the re-arm page and optionally launch it; used after a reboot. |
 | [`scripts/make_installer.py`](scripts/make_installer.py) | Build the IPK from your two binaries and your public key. The `postinst` runs as root. |
 | [`scripts/launch_tile.py`](scripts/launch_tile.py) | Launch a tile over MQTT using the sidee session. The only step that needs a paired session. |
-| [`web/install.html`](web/install.html) | TV-side installer page: start `fetcher`, write `sw2.js` and the IPK, trigger the install, read the log. |
-| [`web/trigger.html`](web/trigger.html) | TV-side re-arm page: send uninstall `83` then install `82`. |
+| [`web/install.html`](web/install.html) | TV-side installer page: start `fetcher`, write `sw2.js` and the IPK, trigger the install, read the log. Uses superwatch **82/83** (09.60-era). |
+| [`web/install-u909.html`](web/install-u909.html) | Same flow for **U09.09 / 09.09O** builds: superwatch **53/54** ([55A7KAU findings/02](../../docs/models/55A7KAU/V0000.09.09O.P1015/findings/02-root-ssh.md)). Open `http://<host>:9000/install-u909.html` on the TV. |
+| [`web/trigger.html`](web/trigger.html) | TV-side re-arm page: send uninstall `83` then install `82` (09.60-era). Do **not** use this on 09.09O. |
+| [`web/trigger-u909.html`](web/trigger-u909.html) | Re-arm for **U09.09 / 09.09O**: uninstall `54` then install `53`. Prefer `install-re_sshd.sh` so this is unused after first boot. |
+| [`scripts/install-re_sshd.sh`](scripts/install-re_sshd.sh) | After root SSH works: deploy canonical `re_sshd` from `docs/models/55A7KAU/.../source/re_sshd/` over SSH so dropbear returns on boot. |
 | [`web/server.py`](web/server.py) | Plain HTTP server for the pages and `web/pub/`; stores TV POSTs under `web/captures/`. |
 | [`faas/sw2.js`](faas/sw2.js) | FaaS module that connects to `/var/run/superwatch_socket` and sends length-prefixed commands. |
 | [`bin/`](bin/) | Placeholder for **your** `dropbear-root` and `dropbearkey`. Ships only a README. |

@@ -52,11 +52,20 @@ mkdir -p "$D" 2>/dev/null
 
   if [ -f "$D/dropbear.pid" ]; then kill "$(cat "$D/dropbear.pid")" 2>/dev/null; sleep 1; fi
 
-  [ -f "$SRC/dropbear-root" ] && mv -f "$SRC/dropbear-root" "$D/dropbear-root"
-  [ -f "$SRC/dropbearkey" ] && mv -f "$SRC/dropbearkey" "$D/dropbearkey"
-  [ -f "$SRC/authorized_keys" ] && mv -f "$SRC/authorized_keys" "$D/root_home/.ssh/authorized_keys"
-  cp -f "$D/root_home/.ssh/authorized_keys" "$D/home/.ssh/authorized_keys" 2>/dev/null
+  # opkg may extract under /APPS/pkgs/APPS/.re_sshd (SRC) or flat into D.
+  # always refresh binaries when a new IPK lands — skipping this left the
+  # broken ur9s build on the TV because sizes matched.
+  if [ -f "$SRC/dropbear-root" ]; then mv -f "$SRC/dropbear-root" "$D/dropbear-root"; fi
+  if [ -f "$SRC/dropbearkey" ]; then mv -f "$SRC/dropbearkey" "$D/dropbearkey"; fi
+  AK="$D/root_home/.ssh/authorized_keys"
+  if [ -f "$SRC/authorized_keys" ]; then
+    cp -f "$SRC/authorized_keys" "$AK"
+  elif [ -f "$D/authorized_keys" ]; then
+    cp -f "$D/authorized_keys" "$AK"
+  fi
+  cp -f "$AK" "$D/home/.ssh/authorized_keys" 2>/dev/null
   ls -la "$SRC" 2>&1 | head -10
+  ls -la "$D" 2>&1 | head -10
 
   printf '@SHELL_WHITELIST@\n' > /APPS/shell
   chmod 644 /APPS/shell

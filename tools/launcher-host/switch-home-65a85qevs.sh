@@ -14,6 +14,7 @@
 # MODES:
 #   dry       stock-only restart; no file or cache changes (the gate)
 #   install   atomic launcher swap + JS-cache reset, then restart
+#   switch    swap candidate when native home is already installed
 #   rollback  restore stock app.js + JS-cache, then restart
 #
 # Teardown: MODE=rollback restores everything. Files are written only under
@@ -65,6 +66,11 @@ case "$MODE" in
     [ -f "$BACKUP/app.js.stock" ] || fail "stock backup missing"
     [ ! -e "$BACKUP/compiled_js" ] || fail "cache backup already present"
     ;;
+  switch)
+    [ "$(md5of "$CANDIDATE")" = "$CANDIDATE_MD5" ] || fail "candidate hash mismatch"
+    [ -f "$BACKUP/app.js.stock" ] || fail "stock backup missing"
+    [ -d "$BACKUP/compiled_js" ] || fail "no stock cache backup; run install first"
+    ;;
   rollback)
     [ -f "$BACKUP/app.js.stock" ] || fail "stock backup missing"
     ;;
@@ -96,19 +102,23 @@ fi
 log "SystemUI stopped (wait ${i}s)"
 
 # Mutate files only while the UI engine is down (55A7KAU lesson).
-if [ "$MODE" = install ]; then
+if [ "$MODE" = install ] || [ "$MODE" = switch ]; then
   tmp="$APP.alvidaa-tmp"
   /bin/cp "$CANDIDATE" "$tmp" || fail "cannot stage candidate"
   /bin/chown 305:909 "$tmp" || fail "cannot set owner 305:909"
   /bin/chmod 0640 "$tmp" || fail "cannot set mode 0640"
   /bin/mv -f "$tmp" "$APP" || fail "cannot install candidate"
   for d in compiled_js uncompiled_js; do
-    /bin/mv "$CACHE/$d" "$BACKUP/$d" || fail "cannot back up $d"
+    if [ "$MODE" = install ]; then
+      /bin/mv "$CACHE/$d" "$BACKUP/$d" || fail "cannot back up $d"
+    else
+      /bin/rm -rf "$CACHE/$d" || fail "cannot clear $d"
+    fi
     /bin/mkdir "$CACHE/$d" || fail "cannot recreate $d"
     /bin/chown 311:311 "$CACHE/$d" || fail "cannot own $d"
     /bin/chmod 0751 "$CACHE/$d" || fail "cannot chmod $d"
   done
-  log "installed candidate; JS cache dirs reset (originals in $BACKUP)"
+  log "$MODE complete; JS cache dirs reset (originals in $BACKUP)"
 elif [ "$MODE" = rollback ]; then
   tmp="$APP.alvidaa-tmp"
   /bin/cp -p "$BACKUP/app.js.stock" "$tmp" || fail "cannot stage stock app.js"

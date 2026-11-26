@@ -188,7 +188,7 @@ both regenerate from `docs/research/inventory.json`.
 | VS1165UD1_0400 | V0000.06.10S.N1222 | untested | untested | [@PureBreadBagel](https://github.com/PureBreadBagel) |
 | 65A85QEVS | V0000.09.60A.Q0602 | working | achieved | [@LastThylacine](https://github.com/LastThylacine) |
 | 55U67LEVS | V0000.09.60A.Q0707 (55U67LEVS) | untested | achieved | [unit owner](https://github.com/carteakey/alvidaa) |
-| 65E86GEVS | V0000.09.09O.P0930 | untested | achieved | [@noctonca](https://github.com/noctonca) |
+| 75U7KQ; 65E86GEVS | V0000.09.09O.P0930 | working | achieved | [@noctonca](https://github.com/noctonca), [@aleskxyz](https://github.com/aleskxyz) |
 | 65A70LAVT | V0000.09.60A.Q0707 (65A70LAVT) | untested | achieved | [u/sl3yr84](https://reddit.com/user/sl3yr84) |
 | 55U65QEVS | V0000.09.60A.Q0602 (55U65QEVS) | working | achieved | [@gwerneckp](https://github.com/gwerneckp) |
 <!-- INVENTORY:END -->

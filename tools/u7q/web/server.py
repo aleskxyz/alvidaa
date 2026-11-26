@@ -22,7 +22,9 @@ SEQ = itertools.count()
 PAGES = {
     "/": "install.html",
     "/install.html": "install.html",
+    "/install-u909.html": "install-u909.html",
     "/trigger.html": "trigger.html",
+    "/trigger-u909.html": "trigger-u909.html",
     "/rearm.html": "rearm.html",
     "/probe.html": "probe.html",
     "/check.html": "check.html",

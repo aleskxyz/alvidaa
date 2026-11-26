@@ -782,35 +782,38 @@
     },
     {
       "id": "V0000.09.09O.P0930",
-      "model": "65E86GEVS (serial type 65E8GE)",
-      "region": "EM_B",
+      "model": "75U7KQ; 65E86GEVS (75U63KAVS / 65E8GE)",
+      "region": "EU_A (CZE); EM_B (65E86GEVS)",
       "soc": "MTK9618 (mt5879; aarch64 kernel, armhf userland)",
       "vidaa_os": "U09.09",
-      "transport_protocol": "?",
+      "transport_protocol": "3290",
       "browser": "Chromium 111 \"odin\" (api 3.0.1)",
       "build_date": "2025-09-15 (from basic.ini branch suffix all-MTK9618_VIDAA_U909_EUAU_Hotfix_MP_20250915; not confirmed independently)",
       "tested_by": [
-        "gh:noctonca"
+        "gh:noctonca",
+        "gh:aleskxyz"
       ],
       "capabilities": {
-        "pairing": "untested",
-        "launcher": "untested",
-        "native_home": "untested",
+        "pairing": "working",
+        "launcher": "working",
+        "native_home": "working",
         "file_bridge_traversal": "open",
         "file_bridge_write": "open",
         "identity_gate": "n-a",
         "euladpp_untar": "untested",
         "devtools_forge": "untested",
         "root": "achieved",
-        "notes": "First MTK9618 row on the U09.09 branch (sibling 09.09 rows are MTK9602/9603). Model guide: docs/models/65E86GEVS/V0000.09.09O.P0930/. Root = superwatch command 55 RunIpkRestoreCommand over the group-616 UDS: the restore path composes a shell command from the caller-supplied package name WITHOUT quoting, so the name is evaluated by /bin/sh in the root context — an injection subclass, distinct from the install-id chains recorded elsewhere (83/82, 53/54, 85), whose root cause is postinst-as-root policy. Frame is uint32le length + '<sid>:<cmd>:<args>' (same wire as 55E7QTUK). File bridge OPEN for both traversal and write on this build — hiutils appconfig permits fileRead/fileWrite (503 only on setDebugPort/installApplication); the phoenix permission gate is bypassable two ways (empty identifier; forgeable static-key tokens, literal withheld). Launcher Home identified statically as tv.vidaa.app.operationui (AppId launcher, webpack MODULE_LAUNCHER, 17 sub-apps); pairing/launcher lanes and native Home NOT exercised here (untested). Boot persistence via a writable-service boot hook (mechanism documented, hook withheld). Vendor defect remains on the device after our cleanup."
+        "notes": "First MTK9618 row on the U09.09 branch (sibling 09.09 rows are MTK9602/9603). Guides: docs/models/65E86GEVS/V0000.09.09O.P0930/ (static recon); docs/models/75U7KQ/V0000.09.09O.P0930/ (owner session). 75U7KQ fingerprint (2026-11-26 SSH): retail 75U7KQ; internal platform 75U63KAVS; serial type 75U6KX (/hidata/critical/config/critical.ini, /APPS/ModelInfo.ini); market EU_A, country CZE in critical (OAD table also lists DEU). transport_protocol 3290 (SSDP `modelDescription` on :18400/MediaServer/rendererdevicedesc.xml, 2026-11-26; :3366/dd.xml stub has no blob). Two root subclasses on one pin: (A) 65E86GEVS @noctonca EM_B — superwatch command 55 RunIpkRestoreCommand, unquoted pkg-name shell injection (vendor defect; persistence via withheld boot hook). (B) 75U7KQ @aleskxyz — browser fetcher fetchFile + superwatch 54/53 (82/83 return 604 invalid on this branch); tools/u7q IPK postinst uid 0, patched static Dropbear key-only :8008, login shell /bin/sh; boot persistence via canonical re_sshd in tv.vidaa.jsservice.basic/CHA/services + serviceList autostart (cold boot :8008 ~20s, Plan B verified 2026-11-26). Lane 3 native Home: free-my-tv-09o (getCurrentShowApps, not getAppList — do not use free-my-tv-75u8qtuk); CHB operation-ui path per tools/launcher-host/models.json 75u7kq; rollback/switch verified. File bridge open on 65E86GEVS static work; fetcher write exercised end-to-end on 75U7KQ. Pairing lane 1 verified on 75U7KQ only (2026-11-26). OTA blocked on the 75U7KQ unit under test."
       },
       "capability_detail": {
-        "file_bridge_traversal": "HiUtils fileRead with '/' traversal read world-readable files outside the mode base (verified read of /proc:/etc files); the exact path form is in the model guide.",
-        "file_bridge_write": "HiUtils fileWrite ret:true to /APPS, /OAD, /var/tvservice and /tmp from a page context (no 503 on this build); the appconfig allowlist permits fileRead/fileWrite. The FaaS fetcher (basic/fetcher fetchFile, uid 314) exists as a second write surface; not separately probed.",
+        "file_bridge_traversal": "HiUtils fileRead with '/' traversal read world-readable files outside the mode base (verified on 65E86GEVS static guide). Array-path hiutils traversal not re-probed on 75U7KQ.",
+        "file_bridge_write": "65E86GEVS: HiUtils fileWrite ret:true to /APPS, /OAD, /var/tvservice and /tmp from a page context. 75U7KQ: basic/fetcher fetchFile staged sw2.js and installer.ipk to jsservice.basic CHA (ret:true 'download finished', uid 314) for the 53/54 install chain.",
         "identity_gate": "hiutils enforces appconfig per action (setDebugPort/installApplication -> 503) but permits the fileRead/fileWrite pair, and the phoenix permission check is bypassed by an empty identifier regardless. No per-app gate blocks the open APIs on this build.",
         "devtools_forge": "Not tested. For the record, setDebugPort and installApplication are refused with 503 appconfig while fileRead/fileWrite are allowed.",
-        "root": "superwatch_server (uid 0) UDS chowned to gid 616; phoenix (uid 314) is in group 616 and passes the per-command peer-credential check by design. Command 55 RunIpkRestoreCommand builds a shell command from the pkg-name arg without quoting; two frames with a crafted name mint a setuid root shell. /proc/self/status Uid 314 0 0 0, /etc/shadow readable, /data listed. Persistence = writable-service boot hook (arch withheld); teardown in the guide; the vendor bug is still present after cleanup.",
-        "launcher": "Launcher Home module identified statically: tv.vidaa.app.operationui (AppId launcher, uid 305:909, branch VIDAA_UI_MT9618_U902_EUAU_MP_20250708), wired via HI_UI_OPERATIONUI in startgui.sh, webpack bundle MODULE_LAUNCHER with apps/{launcher,all-inputs,app-service,ads,...}; SDK contracts (changeSourceTo, getAllInputsData, getAppList) present. No launcher was installed or run on this unit."
+        "root": "Subclass A (65E86GEVS): superwatch_server UDS gid 616; command 55 RunIpkRestoreCommand builds an unquoted shell command from the pkg-name arg — setuid root shell; persistence mechanism withheld in public guide. Subclass B (75U7KQ, owner-verified 2026-11-26): fetcher → superwatch 54 uninstall / 53 install → vendor opkg postinst as uid 0 (CapEff 0000003fffffffff); u7q mtk9618 Dropbear on :8008; re_sshd serviceList autostart survives cold boot (~20s to listen). Teardown: remove /APPS/.re_sshd artifacts and restore serviceList.json from /var/local/alvidaa/re_sshd-backup/serviceList.json.pristine.",
+        "launcher": "75U7KQ: native lane 3 via free-my-tv-09o component swap in CHB operation-ui app.js (native-install.cjs --model 75u7kq); apps/icons owner-confirmed; stock md5 8131f9a4… pinned under firmware/75u7kq/. 65E86GEVS: operation-ui identified statically (MODULE_LAUNCHER, app-service uses getCurrentShowApps on this branch); bridge lanes 1/2 not exercised.",
+        "native_home": "75U7KQ only: Free My TV 09o build rendered on screen; survived rollback→install cycle and coexists with boot-persistent root SSH. 65E86GEVS: not installed.",
+        "pairing": "75U7KQ @aleskxyz 2026-11-26: CN=VidaaAppAndroidV01 client cert + modern MQTT profile; colon-formatted Wi‑Fi TV_MAC; broker :36669 TLS; PIN accepted, tokenissuance written (2-day access token). 65E86GEVS: pairing not exercised on that unit."
       }
     },
     {

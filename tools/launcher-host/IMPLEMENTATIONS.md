@@ -15,9 +15,10 @@ put it on a TV, see [VARIANTS.md](VARIANTS.md).
 | --- | --- | --- | --- | --- |
 | **Free My TV** (generic) | [@JacksonDCollins](https://github.com/JacksonDCollins) | 55A7KAU / `09.09O.P1015` | `free-my-tv-native.js`, `native-web-*.js`, `build-native-web.cjs` | merged, owner-verified on that unit |
 | **Free My TV** (75U8QTUK port) | [@Kingpandacc](https://github.com/Kingpandacc) | 75U8QTUK / `09.60I.Q0813` | `free-my-tv-native-75u8qtuk.js`, `native-platform-75u8qtuk.js`, `build-native-75u8qtuk.cjs` | merged, owner-verified on that unit |
+| **Free My TV** (U09.09 operation-ui) | [@aleskxyz](https://github.com/aleskxyz) | 75U7KQ / `09.09O.P0930` (CHB) | `build-native-09o.cjs`: `native-platform.js` + `free-my-tv-native-75u8qtuk.js` | owner-verified; `getCurrentShowApps` like generic, vidaahub icons like 75U8 port |
 | **alvidaa design** | this repo | any build with the writable bundle | `native-alvidaa.js`, `native-platform.js`, `build-native-alvidaa.cjs` | **installed and rendering** on 50A51HUV / `09.01O.P0813` (2026-11-09); input switch, apps overlay and Settings pending. See [NATIVE-ALVIDAA.md](NATIVE-ALVIDAA.md) and issue #35 |
 
-Both Free My TV variants are the same product: an offline clock-and-shelf home
+The Free My TV variants are the same product: an offline clock-and-shelf home
 that lists apps and inputs through the vendor SDK and opens the real stock
 Settings. The 75U8QTUK entry is a per-build port of the generic one, which is
 the pattern to copy rather than a second product.

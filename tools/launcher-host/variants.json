@@ -27,6 +27,18 @@
       ]
     },
     {
+      "id": "free-my-tv-09o",
+      "name": "Free My TV (U09.09 operation-ui)",
+      "author": "aleskxyz",
+      "summary": "Free My TV with getCurrentShowApps (09.09O app-service) and vidaahub icon handling from the 75U8 port.",
+      "build": "build-native-09o.cjs",
+      "parts": ["native-platform.js", "free-my-tv-native.js", "free-my-tv-native-75u8qtuk.js", "native-entry.js"],
+      "license": "third-party/free-my-tv/LICENSE",
+      "verified": [
+        { "model": "75U7KQ", "firmware": "V0000.09.09O.P0930" }
+      ]
+    },
+    {
       "id": "free-my-tv-75u8qtuk",
       "name": "Free My TV (75U8QTUK port)",
       "author": "Kingpandacc",
